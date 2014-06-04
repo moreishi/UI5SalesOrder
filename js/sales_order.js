@@ -244,10 +244,10 @@ function PageSCProducts(_app, _app_content) {
         type: "Active",
         press: function(oEvt) { 
 
-            OH_prodInfo.setTitle(oEvt.getSource().getTitle());
-            OH_prodInfo.setNumber(oEvt.getSource().getNumber());
-            OH_prodInfo.setNumberUnit("USD");
-            OH_prodInfo_count_ID.setText(oEvt.getSource().getAttributes()[0].getText()); 
+            // OH_prodInfo.setTitle(oEvt.getSource().getTitle());
+            // OH_prodInfo.setNumber(oEvt.getSource().getNumber());
+            // OH_prodInfo.setNumberUnit("USD");
+            // OH_prodInfo_count_ID.setText(oEvt.getSource().getAttributes()[0].getText()); 
 
             _app_content.to(Page_ADP_prodInfo);
 
@@ -306,20 +306,18 @@ function PageProductDetail() {
         contentRight: [ new sap.m.Button({icon: "sap-icon://home"}) ]
     }); 
 
-    Page_ADP_prodInfo.setCustomHeader(Bar_ADP_prodInfo);
+    Page_ADP_prodInfo.setCustomHeader(Bar_ADP_prodInfo);   
     
-    OH_prodInfo = new sap.m.ObjectHeader("OH_prodInfo",{
-        statuses : [ 
-            new sap.m.ObjectStatus({text : ""}),
-            OH_prodInfo_count = new sap.m.ObjectStatus({text : "per piece"})
-        ],
-        attributes : [
-            new sap.m.ObjectAttribute({text: ""}),
-            OH_prodInfo_count_ID =  new sap.m.ObjectAttribute({active: true})
-        ]
-    });
+    Page_ADP_prodInfo.addContent(createIconTabPanel());
+    Page_ADP_prodInfo.addContent(createProductCartTable());
+    Page_ADP_prodInfo.addContent(createProductTotal());
 
-    Page_ADP_prodInfo.addContent(OH_prodInfo);
+    Table_prodInfo.setHeaderText("Items ("+sample_prodDetails.length+")");
+    BindData(sample_prodDetails, Table_prodInfo, "records",  "");
+    Table_prodInfo.bindAggregation("items", {
+            path: "/records",
+            template: CLI_prodInfo
+    });
     
     return Page_ADP_prodInfo;
 }
@@ -352,8 +350,123 @@ function ScSalesOrder(_app) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////// CONTROLS ///////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+function createProductTotal() {
+        
+    HB_prodDiscount = new sap.m.HBox("",{
+                alignItems: "Center",
+                justifyContent: "SpaceBetween",
+                items: [ 
+                    new sap.m.Label("cart_discount", {text:"Discount", design: "Bold"}).addStyleClass('cartLbl'),
+                    new sap.m.Input("cart_discount_input",{type:"Number", value: "1000000000.00"}).addStyleClass('cartInput'),
+                ]
+    });
+    
+    HB_prodTotal = new sap.m.HBox("",{
+                alignItems: "Center",
+                justifyContent: "SpaceBetween",
+                items: [ 
+                    new sap.m.Label("cart_total",{text:"Total", design: "Bold"}).addStyleClass('cartLbl'),
+                    new sap.m.Input("cart_total_input",{type:"Number", editable: false, enable: false, value: "1000.00"}).addStyleClass('cartInput'),
+                ]
+    });
+    
+    
+    VB_prodTotal = new sap.m.VBox("", {alignItems: "Center", 
+                    alignItems: "End",
+                    justifyContent: "Center", 
+                    items: [HB_prodDiscount, 
+                            HB_prodTotal
+                    ]       
+    });
+    
+    
+    return VB_prodTotal;
+}   
+
+function createIconTabPanel() {
+        
+
+    var ITB_prodInfo = new sap.m.IconTabBar({visible: false, expandable: false,
+        items : [
+            new sap.m.IconTabFilter("Customer_Info", {
+                icon: "sap-icon://customer",
+                iconColor: sap.ui.core.IconColor.None,
+                text: "Customer Info",
+                key: "Customer Info"
+            }),     
+            new sap.m.IconTabFilter("Delivery_Schedule", {
+                icon: "sap-icon://accelerated",
+                iconColor: sap.ui.core.IconColor.None,
+                text: "Delivery Schedule",
+                key: "Delivery Schedule"
+            }),         
+            new sap.m.IconTabFilter("Order_Details", {
+                icon: "sap-icon://cart-2",
+                iconColor: sap.ui.core.IconColor.None,
+                text: "Order Details",
+                key: "Order Details"
+            })
+        ]
+    });
+
+
+    Panel_IconTab = new sap.m.Panel({
+        headerToolbar : new sap.m.Toolbar({
+            content : [
+                Btn_toggle = new sap.m.Button({
+                    icon: "sap-icon://expand",
+                    press : function (oEvent) {
+                        
+                        if(ITB_prodInfo.getVisible()){
+                            ITB_prodInfo.setVisible(false);
+                            Btn_toggle.setIcon("sap-icon://expand");
+                        } else {
+                            ITB_prodInfo.setVisible(true);
+                            Btn_toggle.setIcon("sap-icon://collapse");                          
+                        }
+                    }
+                }),
+                new sap.m.Text({text: "Product Information"})
+            ]
+        }),
+        content : [ ITB_prodInfo ]
+    });
+    
+    return Panel_IconTab;
+    
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////// TEMPLATES              ////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+function createProductCartTable() {
+                
+    Table_prodInfo = new sap.m.Table("Table_prodInfo", {showNoData:false,headerText: "Items (0)"});
+        Table_prodInfo.addColumn(new sap.m.Column({header: new sap.m.Text({text:"Item",textAlign:"Center"}) ,hAlign: "Center"}));
+        Table_prodInfo.addColumn(new sap.m.Column({header: new sap.m.Text({text:"Requested Quantity",textAlign:"Center"}) ,hAlign: "Center"}));
+        Table_prodInfo.addColumn(new sap.m.Column({header: new sap.m.Text({text:"Requested Date",textAlign:"Center"}),hAlign: "Center"}));
+        Table_prodInfo.addColumn(new sap.m.Column({header: new sap.m.Text({text:"Unit Price",textAlign:"Center"}),hAlign: "Center"}));          
+        Table_prodInfo.addColumn(new sap.m.Column({header: new sap.m.Text({text:"Sub Total",textAlign:"Center"}),hAlign: "Center"}));   
+        Table_prodInfo.addColumn(new sap.m.Column({header: new sap.m.Text({text:"",textAlign:"Center"}),hAlign: "Center"}));    
+        
+    CLI_prodInfo = new sap.m.ColumnListItem("CLI_prodInfo", {type:'Inactive'});
+        CLI_prodInfo.addCell(new sap.m.ObjectIdentifier({title: "{prod_name}",text : "{prod_id}"}));
+        CLI_prodInfo.addCell(new sap.m.HBox({ alignItems: "Center", justifyContent: "SpaceBetween", items: [new sap.m.Input({value: "{prod_qty}", width: "5rem"}).addStyleClass('numericAlignment'), new sap.m.Text({text: "PC"})] }));
+        CLI_prodInfo.addCell(new sap.m.DateTimeInput({type: sap.m.InputType.Date,/* displayFormat: "yyyy-MM-dd", */valueFormat: "yyyy-MM-dd", value: "{prod_date}"}));
+        CLI_prodInfo.addCell(new sap.m.VBox({ alignItems: "Center", justifyContent: "End", items: [new sap.m.Text({text: ""}), new sap.m.ObjectNumber({number: "{prod_price}",numberUnit : "{prod_currency}", state: "None"})]}));
+        CLI_prodInfo.addCell(new sap.m.VBox({ alignItems: "Center", justifyContent: "End", items: [new sap.m.Text({text: ""}), new sap.m.ObjectNumber({number: "{prod_totalprice}",numberUnit : "{prod_currency}", state: "None"})]}));
+        CLI_prodInfo.addCell(new sap.m.VBox({ alignItems: "Center", justifyContent: "End", items: [new sap.m.Text({text: ""}), new sap.ui.core.Icon({src:"sap-icon://sys-cancel",color:"red",press:function(oEvent){
+            // get the index of selected item to be removed
+            indices = oEvent.getSource().getParent().toString().split('-');
+            index_product = indices[indices.length-1];              
+        }})]}));
+        
+    return Table_prodInfo;
+}   
 
 function createEntitlementTable(_count_data, _app) {
 
@@ -425,6 +538,35 @@ function OrderItemList() {
 //     {"id": "10004", "customer" : "John Cabrera", "sales_area" : "Malabon, PH", "city" : "Cebu"}
 // ];
 
+function oDataCustomerOrders(_customer_data) {
+
+    var oServiceUrl = "http://175.139.197.17:8081/vm07/sap/opu/odata/sap/ZGW_CUSTOMER_SRV/GetCustData('" + _customer_data + "')/?$expand=SalesOrderHdrSet/SalesOrderItmSet&$format=json";
+    var oModel = new sap.ui.model.odata.ODataModel(oServiceUrl, true);
+    var _data = [];
+
+    oModel.read("GetCustData","","","", function(data) {
+
+        for(var i = 0; i < data.results.length; i++) {
+            var temp = data.results[i];
+            // _data.push({
+            //     id: temp.Kunnr,
+            //     customer: temp.Name1,
+            //     sales_area: temp.ZvkorgName + "" + temp.ZvtwegName + "" + temp.ZspartName,
+            //     city: temp.Ort01
+            // });
+        };
+
+        console.log(data);
+        console.log(_data);
+
+    }, function(data) {
+        console.log("Error!");
+    });
+
+    return _data;
+
+}
+
 function oDataCustomer() {
 
     var oServiceUrl = "http://175.139.197.17:8081/vm07/sap/opu/odata/sap/ZGW_CUSTOMER_SRV/";
@@ -476,3 +618,9 @@ var oProducts = [
     {"id": "130004", "product": "Gaxlaxy Tab 7.0", "qty": "3", "price": "1,204.00", "currency": "USD", "status": "In Stock"},
     {"id": "130005", "product": "DELL 32 LED Monitor", "qty": "6", "price": "1,205.00", "currency": "USD", "status": "In Stock"}
 ];
+
+var sample_prodDetails = [
+    {"prod_name" : "Twisted Pair Cable", "prod_price" : "0.00", "prod_qty" : "1", "prod_totalprice" : "0.00", "prod_currency": "MYR", "prod_date" : "2014-06-03", "prod_id" : "100001"},
+    {"prod_name" : "Radio Business", "prod_price" : "1225.00", "prod_qty" : "2", "prod_totalprice" : "2450.00", "prod_currency": "MYR", "prod_date" : "2014-06-03", "prod_id" : "100002"},
+    {"prod_name" : "Motorradheim", "prod_price" : "2225.00", "prod_qty" : "2", "prod_totalprice" : "4450.00", "prod_currency": "MYR", "prod_date" : "2014-06-03", "prod_id" : "100003"}
+]

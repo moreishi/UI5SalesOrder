@@ -1,0 +1,39 @@
+
+
+/* Aljhun */
+.NewEntryLbl{margin-right:10px;margin-top:15px;}
+.InfoTabInput{}
+
+/* Glenn */
+#vboxmain{ margin-top: 3em }
+#checkinForm{ margin-top: 2em }
+#clcollapse{display:none;}
+
+.Btn_Upper{margin:5px;}
+
+#TSE_Calendar_Legendcollapse{display:none;}
+
+.sapUIMeLegendOuterContainer {
+background-color: transparent;
+}
+
+.NewEntryClientDr{margin-right:18.1em;}
+
+.sapMBar .sapMBarRight {position: none;}
+
+.sapMObjLItem {
+ padding-top: 0rem;
+ padding-bottom: 0rem;  
+}
+
+.TSE_View_Title{
+font: bold 1rem Arial,Helvetica,sans-serif;
+text-shadow: 0 1px 0 #ffffff;
+color: #333333;
+height: 3rem;
+line-height: 3rem;
+padding: 0 1rem;
+}
+#Title_Flexbox{
+
+}

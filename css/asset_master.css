@@ -1,0 +1,63 @@
+
+/* Main Content - Form - Create New Request */
+.sapUiRLContainerCont{margin-left:20px;}
+
+/* General Form */
+
+	.GeneralLbl{ max-width:200px; min-width:150px; /*width: 200px;*/ /* float:right; */ }
+	.GeneralSelect{ min-width: 340px; /*width: 500px;*/ /* height:27px; */ /* float:right; */ } 
+	.GeneralInput{ max-width:340px; min-width:200px; /*width: 300px;*/ /* height:27px; */ /* float:right; */ } 
+	.GeneralInputQuantity { max-width:100px; min-width:100px; /* height:27px; */ /* float:right; */ } 
+	.GeneralSelectQuantity { max-width:100px; min-width:100px;  margin-left: 10px; /* height:27px; */ /* float:right; */ } 
+	.GeneralInputQuantity input{ text-align:right; } 
+	
+	.Asset_Transfer_Lbl , .GeneralLbl{ max-width:200px; min-width:150px; /*width: 200px;*/ /* float:right; */ }
+	.Asset_Transfer_Select , .GeneralSelect{ min-width: 340px; /*width: 500px;*/ /* height:27px; */ /* float:right; */ } 
+	.Asset_Transfer_TextArea{ max-width:364px; min-width:200px;}
+	
+	
+	#SForm_General{padding: 0 !important; !important}
+	#Input_Quantity-cont0_0{width:100px !important; min-width:100px !important}
+	#Input_QuantityDD-cont0_1{width:200px !important; min-width:200px !important}
+
+/* Warranty Form */
+	.WarrantyLbl{ max-width:200px; min-width:150px; /*width: 200px;*/ /* float:right; */ }
+	.WarrantySelect{ min-width: 340px; /*width: 500px;*/ /* height:27px; */ /* float:right; */ } 
+	.WarrantyInput{ max-width:340px; min-width:200px; /*width: 300px;*/ /* height:27px; */ /* float:right; */ } 
+	
+
+	#SForm_Warranty{padding: 0 !important; !important; margin-left: 0px !important}
+	
+	
+	.NotesLbl{ max-width:200px; min-width:150px;}
+	.NotesTextArea{ max-width:364px; min-width:200px; /*width: 500px;*/ /* height:27px; */ /* float:right; */ } 
+	.Panel_Notes .sapMPanelContent{padding:0 !important}
+	
+	#PhotoUploadA-fu_input{ height: 40px !important; width: 280px !important}
+	#PhotoUploadB-fu_input{ height: 40px !important; width: 280px !important}
+	
+	#__label4-cont0_0{margin-top: 25px;}
+	#__label5-cont0_0{margin-top: 10px;}
+	#__label6-cont0_0{margin-top: 10px;}
+	
+		
+	#SForm_Notes{padding: 0 !important; margin-top: -18px !important; margin-left: 0px !important}
+
+	.icon_list_pading{padding-left:10px;}
+	.text_list_pading{padding-left:35px;}
+	
+	.sapMLnk{
+		border: 1px solid #bfbfbf;
+		
+		padding-top:10px;
+		padding-bottom:10px;
+		padding-left:10px;
+		
+		font-size: 0.875rem;
+		font-family: Arial,Helvetica,sans-serif;
+	}
+		
+		#PhotoUploadA-fu_input{
+		
+			display: none;
+		}

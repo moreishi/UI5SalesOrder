@@ -1,0 +1,40 @@
+.sapMObjLNumber {
+    font-size: 1.25rem;
+}
+
+.numericAlignment input{
+    text-align:right;
+}
+
+.sapMPanelContent {
+    padding: 0rem !important;
+    border-bottom: 0 !important;
+}
+
+
+.cartLbl{ max-width:200px; min-width:100px; margin-right: 1rem; color: #000000}
+.cartInput{ max-width:150px; min-width:100px; margin-right: 125px} 
+
+.cartInput input{ text-align:right; font-weight:bold;} 
+
+#cart_discount{text-align: right !important}
+#cart_total{text-align: right !important}
+
+.sapMITBFilter .sapMITBText {
+    /*color: #ffffff;*/ /* removed by joefe */
+    /*width: 8rem; /* modified by joefe */
+}
+
+/*Icon tab text margin*/
+#Customer_Info-text {
+    color: #000000;
+    width: 8rem;
+}
+#Delivery_Schedule-text{
+    color: #000000;
+    width: 8rem;
+}
+#Order_Details-text{
+    color: #000000;
+    width: 8rem;
+}
