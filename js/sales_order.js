@@ -31,7 +31,7 @@ function PageCustomer(_app) {
         contentLeft: [ new sap.m.Image({src: "image/logo/logo.png", width: "100px", height: "37px"}) ],
         contentRight: [ new sap.m.Button({icon: "sap-icon://home"}) ],
         contentMiddle: [ new sap.m.Label({text: "Select Customer"}) ]
-    })
+    });
 
     var oSearchField = new sap.m.SearchField({ 
         layoutData: new sap.m.FlexItemData({growFactor: 2}),
@@ -83,7 +83,7 @@ function PageCustomerOrders(_app) {
         contentLeft: [ new sap.m.Button({icon: "sap-icon://nav-back", press: function (oEvt) { _app.back(); } }) ],
     });
 
-    oObjectHeader = new sap.m.ObjectHeader({numberUnit: "ID"});
+    oCOObjectHeader = new sap.m.ObjectHeader({numberUnit: "ID"});
 
     var oIconTabBar = new sap.m.IconTabBar({
         items: [ 
@@ -94,7 +94,7 @@ function PageCustomerOrders(_app) {
     });
 
     var oPage = new sap.m.Page("customer_details",{
-        content: [ oObjectHeader, oIconTabBar, new sap.m.Button({text: "Sample", press: function(oEvt) { 
+        content: [ oCOObjectHeader, oIconTabBar, new sap.m.Button({text: "Sample", press: function(oEvt) { 
             _app.to("SC_SO");
         }}) ]
     });
@@ -121,7 +121,6 @@ function PageSalesOrder(_app) {
         contentMiddle: [ new sap.m.Label({text: "Sales Order"}) ]
     })
 
-
     SOObjectHeader = new sap.m.ObjectHeader({
         title: "SO 10004",
         number: "1,200.00",
@@ -129,24 +128,13 @@ function PageSalesOrder(_app) {
         statuses : [ 
             new sap.m.ObjectStatus({text: "Ordered: Feb 3, 2014", state: sap.ui.core.ValueState.None}),
             new sap.m.ObjectStatus({text: "Requested: Feb 3, 2014", state: sap.ui.core.ValueState.None}),
-            new sap.m.ObjectStatus({text: "Status", state: sap.ui.core.ValueState.Success}),
-            new sap.m.ObjectStatus({text: "", state: sap.ui.core.ValueState.Error})
+            SOObjectHeaderStatus = new sap.m.ObjectStatus({text: "Status", state: sap.ui.core.ValueState.Success})
         ],
         attributes: [ 
             SOObjectHeaderCompany = new sap.m.ObjectAttribute({active: true}),
-            new sap.m.ObjectAttribute({text: "Sales Area"}) 
+            SOObjectHeaderSA = new sap.m.ObjectAttribute({text: "Sales Area"}) 
         ]
-    });    // SET The FF: number, numberUnit, title
-
-    //////////////////
-    var customerCount = 'Customers(' + oDataCustomer.length + ')';
-    var oTable = OrderItemList();
-    BindData(oSalesOrder, oTable, "records",  "");
-    oTable.bindAggregation("items", {
-            path: "/records",
-            template: CLI_Order_List
     });
-    /////////////////
 
     var oBarFooter = new sap.m.Bar({
         contentLeft: new sap.m.Button({ icon: "sap-icon://nav-back", press: function(oEvt) { _app.back(); }}),
@@ -156,15 +144,14 @@ function PageSalesOrder(_app) {
 
     var oPage = new sap.m.Page("sales_orders", {
         customHeader: customHeader,
-        content: [ SOObjectHeader, oTable ],
+        content: [ SOObjectHeader, oTableItems ],
         footer: oBarFooter
     });
 
     return oPage;
 }
 
-function PageSCSalesOrder(_app, _app_content) {
-    
+function PageSCSalesOrder(_app, _app_content) {    
 
     var customHeader = new sap.m.Bar({
         contentLeft: [ oSOCustomerName = new sap.m.Label({}) ],
@@ -174,39 +161,13 @@ function PageSCSalesOrder(_app, _app_content) {
         contentLeft: [ new sap.m.Button({icon: "sap-icon://action-settings"}) ],
     });
 
-    var oObjectListItem = new sap.m.ObjectListItem({
-        title: "{id}",
-        number: "{total}",
-        numberUnit: "{currency}",
-        attributes: [ new sap.m.ObjectAttribute({text: "{company}"}) ],
-        firstStatus: new sap.m.ObjectStatus({text: "{status}", state: "Success"}),
-        type: "Active",
-        press: function(oEvt) {
-
-            SOObjectHeader.setTitle(oEvt.getSource().getTitle());
-            SOObjectHeader.setNumber(oEvt.getSource().getNumber());
-            SOObjectHeader.setNumberUnit(oEvt.getSource().getNumberUnit());
-            SOObjectHeaderCompany.setText(oEvt.getSource().getAttributes()[0].getText());
-            _app_content.to("sales_orders");
-
-        }
-    });
-
-    var oList = new sap.m.List({});
-
-    BindData(oMasterSO, oList, "menu", "");
-    oList.bindAggregation("items", {
-            path: "/menu",
-            template: oObjectListItem
-    });
-
     var oPage = new sap.m.Page("PageSCSalesOrder", {
         customHeader: customHeader,
         content: [
-            new sap.m.Button({text: "Orders", width: "125px", press: function(oEvt) { _app.to("PageSCSalesOrder"); }, type: sap.m.ButtonType.Emphasized}),
-            new sap.m.Button({text: "Products", width: "125px", press: function(oEvt) { _app.to("PageSCProducts"); }}),
-            new sap.m.SearchField({placeholder: "search..."}),
-            oList
+            new sap.m.Button({text: "Orders", width: "125px", press: function(oEvt) { _app.to("PageSCSalesOrder"); }, type: sap.m.ButtonType.Emphasized}).addStyleClass("oSCButton"),
+            new sap.m.Button({text: "Products", width: "125px", press: function(oEvt) { _app.to("PageSCProducts"); _app_content.to(Page_ADP_prodInfo); }}).addStyleClass("oSCButton"),
+            SCSearchBar(),
+            oListCustomerOrders
         ],
         footer: customBarFooter
     });
@@ -258,9 +219,9 @@ function PageSCProducts(_app, _app_content) {
     var oPage = new sap.m.Page("PageSCProducts", {
         customHeader: customHeader,
         content: [
-            new sap.m.Button({text: "Orders", width: "125px", press: function(oEvt) { _app.to("PageSCSalesOrder"); }}),
-            new sap.m.Button({text: "Products", width: "125px", press: function(oEvt) { _app.to("PageSCProducts"); }, type: sap.m.ButtonType.Emphasized}),
-            new sap.m.SearchField({placeholder: "search..."}),
+            new sap.m.Button({text: "Orders", width: "125px", press: function(oEvt) { _app.to("PageSCSalesOrder"); _app_content.to("sales_orders"); }}).addStyleClass("oSCButton"),
+            new sap.m.Button({text: "Products", width: "125px", press: function(oEvt) { _app.to("PageSCProducts"); }, type: sap.m.ButtonType.Emphasized}).addStyleClass("oSCButton"),
+            SCSearchBar(),
             oList
         ],
         footer: customBarFooter
@@ -369,12 +330,31 @@ function createEntitlementTable(_count_data, _app) {
 
         var _customer_name = oEvt.getSource().getBindingContext().getProperty("customer");
         var _customer_id = oEvt.getSource().getBindingContext().getProperty("id");
+        var _customer_status = oEvt.getSource().getBindingContext().getProperty("status");
+        var _customer_sa = oEvt.getSource().getBindingContext().getProperty("sales_area");
 
         oSOCustomerName.setText(_customer_name);
         oPCustomerName.setText(_customer_name);
-        oObjectHeader.setTitle(_customer_name);
-        oObjectHeader.setNumber(_customer_id);
-        _app.to("customer_details");
+        oCOObjectHeader.setTitle(_customer_name);
+        oCOObjectHeader.setNumber(_customer_id);
+        oDataCustomerOrders(_customer_id, _app);
+
+        SOObjectHeader.setTitle("SO " + oListOrderItems[0].so);
+        SOObjectHeader.setNumber(oListOrderItems[0].items[0].price);
+        SOObjectHeader.setNumberUnit(oListOrderItems[0].items[0].currency);
+        SOObjectHeaderCompany.setText(oListOrderItems[0].items[0].to);
+        SOObjectHeaderStatus.setText("Complete");
+        SOObjectHeaderSA.setText(_customer_sa);
+
+        // POPULATE THE ITEMS TABLE
+        BindData(oListOrderItems[0].items, oTableItems, "records",  "");
+        oTableItems.bindAggregation("items", {
+                path: "/records",
+                template: CLI_Order_List
+        });
+
+
+        _app.to("SC_SO");
 
     });
 
@@ -388,7 +368,7 @@ function OrderItemList() {
         showNoData:false, 
         visible: true,
     });
-    
+
     Table_Order_List.addColumn(new sap.m.Column({header: new sap.m.Text({text:"Id",textAlign:"Center"}) , hAlign: "Center", visible: false}));
     Table_Order_List.addColumn(new sap.m.Column({header: new sap.m.Text({text:"Product",textAlign:"Center"}) , hAlign: "Center"}));
     Table_Order_List.addColumn(new sap.m.Column({header: new sap.m.Text({text:"Qty",textAlign:"Center"}),hAlign: "Center"}));
@@ -410,20 +390,13 @@ function OrderItemList() {
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-// var oDataCustomer = [
-//     {"id": "10001", "customer" : "Caesar Ian Belza", "sales_area" : "Malabon, PH", "city" : "Cebu"},
-//     {"id": "10002", "customer" : "Arturo Solito III", "sales_area" : "Malabon, PH", "city" : "Cebu"},
-//     {"id": "10003", "customer" : "Joefe The Great", "sales_area" : "Malabon, PH", "city" : "Cebu"},
-//     {"id": "10004", "customer" : "John Cabrera", "sales_area" : "Malabon, PH", "city" : "Cebu"}
-// ];
-
 function oDataCustomer() {
 
-    var oServiceUrl = "http://175.139.197.17:8081/vm07/sap/opu/odata/sap/ZGW_CUSTOMER_SRV/";
-    var oModel = new sap.ui.model.odata.ODataModel(oServiceUrl, true);
+    // var oServiceUrl = "http://175.139.197.17:8081/vm07/sap/opu/odata/sap/ZGW_CUSTOMER_SRV/";
+    // var oModel = new sap.ui.model.odata.ODataModel(oServiceUrl, true);
     var _data = [];
-    oModel.read("GetCustData","","","", function(data) {
-
+    // oModel.read("GetCustData","","","", function(data) {
+        var data = aData;
         for (var i = 0; i < data.results.length; i++) {
             var temp = data.results[i];
             _data.push({
@@ -434,32 +407,103 @@ function oDataCustomer() {
             });
         };
 
-        console.log(data);
-        console.log(_data);
+        // console.log(_aData);
+        // console.log(_customer_orders);
 
-    }, function(data) {
-        console.log("Error!");
-    });
+    // }, function(data) {
+    //     console.log("Error!");
+    // });
+    console.log('bind');
+    return _data;
+
+}
+
+var oDataCustomer = oDataCustomer();    //  GET THE CUSTOMERS LIST FROM ODATA
+
+function oDataCustomerOrders(_customer_id, _app_content) {
+
+    // var oServiceUrl = "http://175.139.197.17:8081/vm07/sap/opu/odata/sap/ZGW_CUSTOMER_SRV/";
+    // var oModel = new sap.ui.model.odata.ODataModel(oServiceUrl, true);
+    var _data = [];
+    var data = _orders;
+    // oModel.read("GetCustData('" + _customer_id + "')/?$expand=SalesOrderHdrSet/SalesOrderItmSet","","","", function(data) {
+
+        for (var i = 0; i < data.SalesOrderHdrSet.results.length; i++) {
+            var temp = data.SalesOrderHdrSet.results[i];            
+            _data.push({
+                id: "SO " + temp.Zvbeln,
+                company: "Ship To: " + temp.Zkunnr,
+                total: temp.Znetwr,
+                status: "Complete",
+                currency: temp.Zwaerk
+            });
+
+            var temp_details = temp.SalesOrderItmSet;
+            var new_temp_detail = [];
+            for(var a = 0; a < temp_details.results.length; a++) {
+                var temp_detail_val = temp_details.results[a];
+                var subtotal = temp_detail_val.Znetwr * temp_detail_val.Zkwmeng;
+                new_temp_detail.push({
+                    id: temp_detail_val.Zmatnr,
+                    product: temp_detail_val.Zarktx,
+                    price: temp_detail_val.Znetwr,
+                    qty: temp_detail_val.Zkwmeng,
+                    currency: temp_detail_val.Zwaerk,
+                    subtotal: subtotal,
+                    to: temp.Zkunnr
+                });
+            }
+
+            oListOrderItems.push({so: temp.Zvbeln, items:  new_temp_detail});
+        };
+        // console.log(data.SalesOrderHdrSet.results);
+        var oObjectListItem = new sap.m.ObjectListItem({
+            title: "{id}",
+            number: "{total}",
+            numberUnit: "{currency}",
+            attributes: [ new sap.m.ObjectAttribute({text: "{company}"}) ],
+            firstStatus: new sap.m.ObjectStatus({text: "{status}", state: "Success"}),
+            type: "Active",
+            press: function(oEvt) {
+
+                SOObjectHeader.setTitle(oEvt.getSource().getTitle());
+                SOObjectHeader.setNumber(oEvt.getSource().getNumber());
+                SOObjectHeader.setNumberUnit(oEvt.getSource().getNumberUnit());
+                SOObjectHeaderCompany.setText(oEvt.getSource().getAttributes()[0].getText());
+
+                for(var a = 0; a < oListOrderItems.length; a++) {
+                    if(oListOrderItems[a].so == oEvt.getSource().getTitle().replace("SO ", "")) {
+                        BindData(oListOrderItems[a].items, oTableItems, "records",  "");
+                        oTableItems.bindAggregation("items", {
+                                path: "/records",
+                                template: CLI_Order_List
+                        });
+                    }
+                }
+
+                _app_content.to("sales_orders");
+
+            }
+        });
+
+        BindData(_data, oListCustomerOrders, "menu", "");
+        oListCustomerOrders.bindAggregation("items", {
+                path: "/menu",
+                template: oObjectListItem
+        });
+
+    // }, function(data) {
+    //     console.log("Error!");
+    // });
 
     return _data;
 
 }
 
-var oDataCustomer = oDataCustomer();
-
-var oSalesOrder = [
-    {"id": "12001", "product" : "Item 1", "price" : "10.00", "qty" : "2", "subtotal" : "20.00"},
-    {"id": "12002", "product" : "Item 2", "price" : "20.00", "qty" : "2", "subtotal" : "40.00"},
-    {"id": "12003", "product" : "Item 3", "price" : "30.00", "qty" : "2", "subtotal" : "60.00"},
-    {"id": "12004", "product" : "Item 4", "price" : "40.00", "qty" : "2", "subtotal" : "80.00"},
-];
-
-var oMasterSO = [
-    {"id" : "130001", "company" : "Apple", "status" : "Complete", "currency" : "USD", "total" : "1,201.00"},
-    {"id" : "130002", "company" : "IBM", "status" : "Complete", "currency" : "USD", "total" : "1,202.00"},
-    {"id" : "130003", "company" : "Google", "status" : "Complete", "currency" : "USD", "total" : "1,203.00"},
-    {"id" : "130004", "company" : "Yahoo!", "status" : "Complete", "currency" : "USD", "total" : "1,204.00"},
-];
+oTableItems = OrderItemList();
+oListCustomerOrders = new sap.m.List({});
+oListOrderItems = [];
+oListProducts = [];
 
 var oProducts = [
     {"id": "130001", "product": "A4 Tech Mouse", "qty": "2", "price": "1,201.00", "currency": "USD", "status": "In Stock"},
@@ -468,3 +512,11 @@ var oProducts = [
     {"id": "130004", "product": "Gaxlaxy Tab 7.0", "qty": "3", "price": "1,204.00", "currency": "USD", "status": "In Stock"},
     {"id": "130005", "product": "DELL 32 LED Monitor", "qty": "6", "price": "1,205.00", "currency": "USD", "status": "In Stock"}
 ];
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////// USER DEFINED FUNCTIONS      /////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+function SCSearchBar() {
+    return new sap.m.SearchField({placeholder: "search..."});
+}
