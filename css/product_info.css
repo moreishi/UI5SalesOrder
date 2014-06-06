@@ -38,3 +38,7 @@
     color: #000000;
     width: 8rem;
 }
+
+.oSCButton {
+    width: 50% !important;
+}
